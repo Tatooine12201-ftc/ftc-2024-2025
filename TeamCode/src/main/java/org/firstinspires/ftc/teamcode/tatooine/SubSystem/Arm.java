@@ -122,9 +122,11 @@ public class Arm {
     //returns the angle(transforms ticks to degrees)
     public double getAngle() {
         if (IS_DEBUG){
-            telemetry.addData("arm angle", MathUtil.convertTicksToDegries(ANGLE_CPR, angleMotor.getCurrentPosition()) + angleOffSet);
+            telemetry.addData("arm angle", MathUtil.convertTicksToDegries(
+                    ANGLE_CPR, angleMotor.getCurrentPosition()) + angleOffSet);
         }
-        return MathUtil.convertTicksToDegries(ANGLE_CPR, angleMotor.getCurrentPosition()) + angleOffSet;
+        return MathUtil.convertTicksToDegries(
+                ANGLE_CPR, angleMotor.getCurrentPosition()) + angleOffSet;
     }
 
     public Telemetry getTelemetry() {
@@ -251,7 +253,8 @@ public class Arm {
     }
 
     public double getExtendPosition(){
-        return MathUtil.convertTicksToDegries(EXTEND_CPR,(extendLeft.getCurrentPosition()+ extendRight.getCurrentPosition())/2);
+        return MathUtil.convertTicksToDistance(EXTEND_CPR,12,
+                (extendLeft.getCurrentPosition() + extendRight.getCurrentPosition()) /2.0);
     }
 
 
@@ -282,7 +285,8 @@ public class Arm {
     }
 
     public Action scoreAction (){
-    return new SequentialAction(setAngle(60),new SleepAction(3), setExtension(0.8),new SleepAction(3),setAngle(45));
+    return new SequentialAction(setAngle(60),new SleepAction(3),
+            setExtension(0.8),new SleepAction(3),setAngle(45));
     }
 
     public Action closeAction (){
@@ -370,6 +374,14 @@ public class Arm {
 
             extendPID.setTimeout((getExtendTimeout())*(openTimeWithPIDExtend /90));
             extendLeft.setPower(extendPID.calculate(getExtendPosition(), goal));
+
+            if(IS_DEBUG){
+                telemetry.addData("ExtendTimout", extendPID.getTimeout());
+                telemetry.addData("ExtendPower", extendLeft.getPower());
+                
+
+
+            }
 
 
             return !extendPID.atSetPoint();
