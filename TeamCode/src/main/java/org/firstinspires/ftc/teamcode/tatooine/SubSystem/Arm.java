@@ -94,6 +94,7 @@ public class Arm {
         this.opMode = opMode; // Set opMode
 
         init(); // Initialize hardware and settings
+
     }
 
     // Initialize the arm motors and reset encoders
