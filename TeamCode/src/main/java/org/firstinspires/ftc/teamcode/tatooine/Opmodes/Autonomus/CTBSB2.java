@@ -58,42 +58,42 @@ public class CTBSB2 extends LinearOpMode {
         waitForStart();
         Actions.runBlocking(new SequentialAction(intake.intakeByTimer(0.3, 1), new InstantAction(()-> arm.setAnglePower(0.7)), new SleepAction(2), new InstantAction(()-> arm.setAnglePower(0)),new InstantAction(()->arm.setStartAngle(90.0)), new InstantAction(()->arm.resetAngleEncoders()) , new ParallelAction(
                         arm.moveExtend(),arm.moveAngle(),new SequentialAction(
-                                arm.setAngle(Conts.angleScoreSpecimenHigh),
+                                arm.setAngle(Conts.angleScoreSpecimenHigh, 2.5),
                         new InstantAction(wrist::intakeFlat)
 //                        , arm.setAngle(90)
                         ,new ParallelAction(
                                 new InstantAction(wrist::intakeFlat)
-                                , arm.setAngle(Conts.angleScoreSpecimenHigh)
-                                , arm.setExtend(20),
+                                , arm.setAngle(Conts.angleScoreSpecimenHigh, 2.5)
+                                , arm.setExtend(20, 4.0),
                                 goScoreSpecimen.build())
 //                    , arm.setAngle(45)
-                        , arm.setExtend(0)
+                        , arm.setExtend(0, 4.0)
                         , new ParallelAction(goIntakeSample1.build() , new SequentialAction(intake.intakeByTimer(-1, 0.5)
                         ,intake.intakeByTimer(0, 0.1)))
                         , intake.intakeByTimer(1, 0.1)
                         , new InstantAction(wrist::intakeUp)
                         , new SleepAction(0.2)
-                        , arm.setAngle(-5)
+                        , arm.setAngle(-5, 2.5)
                         , new SleepAction(1)
-                        , new SequentialAction(arm.setAngle(10), new InstantAction(wrist::intakeFlat), intake.stop())
+                        , new SequentialAction(arm.setAngle(10, 2.5), new InstantAction(wrist::intakeFlat), intake.stop())
                         , goScoreSample1.build()
                         , new SequentialAction(
-                        new ParallelAction(arm.setAngle(Conts.angleScoreSample), arm.setExtend(58))
+                        new ParallelAction(arm.setAngle(Conts.angleScoreSample, 2.5), arm.setExtend(58, 4.0))
                         , new InstantAction(wrist::doc),new SleepAction(0.35), intake.intakeByTimer(-1, 0.5))
-                        , new SequentialAction(intake.stop(),new InstantAction(()-> wrist.intakeFlat()), arm.setExtend(2), arm.setAngle(Conts.angleDrive))
+                        , new SequentialAction(intake.stop(),new InstantAction(()-> wrist.intakeFlat()), arm.setExtend(2, 4.0), arm.setAngle(Conts.angleDrive, 2.5))
                         , goIntakeSample2.build()
                         , intake.intakeByTimer(1, 0.1)
-                        , arm.setAngle(15)
+                        , arm.setAngle(15, 2.5)
                         , new InstantAction(wrist::intakeUp)
-                        ,arm.setExtend(52)
+                        ,arm.setExtend(52, 4.0)
                         ,new SleepAction(0.2)
-                        ,arm.setAngle(-8)
-                        ,arm.setAngle(10)
+                        ,arm.setAngle(-8, 2.5)
+                        ,arm.setAngle(10, 2.5)
                         ,intake.intakeByTimer(0, 0.1)
-                        , arm.setExtend(0)
+                        , arm.setExtend(0, 4.0)
                         , goScoreSample2.build()
                         , new SequentialAction(
-                        new ParallelAction(arm.setAngle(Conts.angleScoreSample), arm.setExtend(58))
+                        new ParallelAction(arm.setAngle(Conts.angleScoreSample, 2.5), arm.setExtend(58, 4.0))
                         , new InstantAction(wrist::doc),new SleepAction(0.35), intake.intakeByTimer(-1, 0.5))
                         , new SequentialAction(intake.stop(),new InstantAction(()-> wrist.intakeFlat()))
                 )

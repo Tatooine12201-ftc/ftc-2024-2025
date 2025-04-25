@@ -291,8 +291,8 @@ public class Arm {
     }
 
     // Action to check if the angle has reached the setpoint
-    public Action setAngle(double goal) {
-        SetAngle setAngle = new SetAngle(goal); // Create at setpoint action
+    public Action setAngle(double goal, double timeout) {
+        SetAngle setAngle = new SetAngle(goal, timeout); // Create at setpoint action
         return setAngle;
     }
 
@@ -302,13 +302,13 @@ public class Arm {
         return moveExtend;
     }
 
-    public Action setExtend(double goal){
-        SetExtend setExtend = new SetExtend(goal);
+    public Action setExtend(double goal, double timeout){
+        SetExtend setExtend = new SetExtend(goal, timeout);
         return setExtend;
     }
 
     public Action intaking(double extend){
-        return new ParallelAction(setExtend(extend),setAngle(-10));
+        return new ParallelAction(setExtend(extend, EXTEND_TIMEOUT),setAngle(-10, ANGLE_TIMEOUT));
     }
 
     // Action class to move the arm angle
@@ -340,13 +340,16 @@ public class Arm {
 
         private boolean doOne = false;
 
-        public SetAngle(double goal) {
+        private double timeout;
+
+        public SetAngle(double goal, double timeout) {
             if (goal > 90){
                 this.goal = 90;
             }
             else{
                 this.goal = goal;
             }
+            this.timeout = timeout;
             doOne = true;
 //            anglePID.setTimeout(100000000);
         }
@@ -356,6 +359,7 @@ public class Arm {
             if (doOne){
                 anglePID.reset();
                 anglePID.setSetPoint(goal);
+                extendPID.setTimeout(timeout);
                 doOne = false;
             }
             DebugUtils.logDebug(opMode.telemetry, IS_DEBUG_MODE, SUBSYSTEM_NAME, "setPointAngle", anglePID.getSetPoint());
@@ -398,7 +402,9 @@ public class Arm {
 
         private double goal = getAngle();
 
-        public SetExtend(double goal){
+        private double timeout = 0;
+
+        public SetExtend(double goal, double timeout){
             if (goal > getMaxExtend()){
                 this.goal = getMaxExtend();
             }
@@ -408,6 +414,7 @@ public class Arm {
             else{
                 this.goal = goal;
             }
+            this.timeout = timeout;
             doOne = true;
 //            if (IS_DEBUG_MODE) {
 //                extendPID.setTimeout(10000);
@@ -419,6 +426,7 @@ public class Arm {
         public boolean run(@NonNull TelemetryPacket telemetryPacket){
             if (doOne){
                 extendPID.reset();
+                extendPID.setTimeout(timeout);
                 extendPID.setSetPoint(goal);
                 doOne = false;
             }
